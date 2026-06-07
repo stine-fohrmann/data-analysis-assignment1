@@ -83,9 +83,24 @@ def seasonal_cycle(
     period (e.g. ``s.groupby(s.index.month)``) with ``.agg(["mean", "median"])``.
     The **seasonal range** is then ``clim["mean"].max() - clim["mean"].min()``.
 
-    TODO (student): implement with a pandas groupby and return the DataFrame.
+    DONE (student): implement with a pandas groupby and return the DataFrame.
     """
-    raise NotImplementedError("Group by calendar period and aggregate mean and median.")
+
+    # Create pandas Series with datetime index
+    s = pd.Series(values, index=pd.DatetimeIndex(time))
+    
+    # Extract grouping key from 'by' parameter
+    if by == "month":
+        group_key = s.index.month
+    elif by == "dayofyear":
+        group_key = s.index.dayofyear
+    else:
+        raise ValueError(f"'by' must be 'month' or 'dayofyear', got '{by}'")
+    
+    # Group by period and aggregate
+    clim = s.groupby(group_key).agg(["mean", "median"])
+    
+    return clim
 
 
 def decorrelation_timescale(
