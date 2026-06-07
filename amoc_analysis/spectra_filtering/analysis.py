@@ -37,26 +37,22 @@ def summary_stats(values: np.ndarray) -> dict[str, float]:
     Use the NaN-aware reductions (``numpy.nanmean`` etc.) so gaps do not poison the
     statistics. Decide and document whether ``std`` uses ``ddof=0`` or ``1``.
 
-    TODO (student): implement and return the dictionary.
+    DONE (student): implement and return the dictionary.
     """
 
-    # Total number of samples
-    n = len(values)
-
-    # Number of NaN values
-    n_missing = int(np.count_nonzero(np.isnan(values)))
-    
-    # Mean
-    mean = float(values.mean().values)
+    min = np.nanmin(values)
+    max = np.nanmax(values)
 
     return {
-        'n': n,
-        'n_missing': n_missing,
-        'mean': mean
+        'n':        len(values),
+        'n_missing':int(np.count_nonzero(np.isnan(values))),
+        'mean':     np.nanmean(values),
+        'std':      np.nanstd(values),
+        'median':   np.nanmedian(values),
+        'min':      min,
+        'max':      max,
+        'range':    max - min
     }
-
-
-    # raise NotImplementedError("Return the summary-statistics dictionary.")
 
 
 def seasonal_cycle(
