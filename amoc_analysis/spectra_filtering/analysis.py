@@ -9,6 +9,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from amoc_analysis.spectra_filtering.data_io import fill_gaps
+
 
 def summary_stats(values: np.ndarray) -> dict[str, float]:
     """Basic descriptive statistics of a (possibly gappy) series.
@@ -142,4 +144,46 @@ def decorrelation_timescale(
     TODO (student): implement the autocovariance, the zero-crossing integral, and
     return ``(integral_scale, ndof)``.
     """
-    raise NotImplementedError("Implement the integral-timescale d.o.f. estimate.")
+
+    filled_values = fill_gaps(values)
+    N = len(filled_values)
+    
+    # 1. Remove the mean
+    # values_centered = values - np.mean(values)
+    values_centered = filled_values - np.mean(filled_values)
+    
+    # 2. Form the normalised autocovariance R (autocorrelation) at non-negative lags
+    raw_autocov = np.correlate(values_centered, values_centered, mode='full')
+    autocov_positive = raw_autocov[N-1:]
+    
+    variance = autocov_positive[0]
+    
+    if variance == 0:
+        return 0.0, 0.0
+    
+    R = autocov_positive / variance
+    
+    # 3. Integrate R from lag 0 until its first zero crossing
+    zero_crossings = np.where(R <= 0)[0]
+    
+    if len(zero_crossings) == 0:
+        cutoff = len(R) - 1
+    else:
+        cutoff = zero_crossings[0]
+    
+    if cutoff == 0:
+        integral_sum = 0.0
+    else:
+        r_left = R[:cutoff]
+        r_right = R[1:cutoff+1]
+        integral_sum = np.sum((r_left + r_right) / 2)
+    
+    integral_scale = integral_sum * dt
+    
+    # 4. Calculate ndof
+    if integral_scale == 0:
+        ndof = 0.0
+    else:
+        ndof = (N * dt) / integral_scale - 1.0
+    
+    return float(integral_scale), float(ndof)
