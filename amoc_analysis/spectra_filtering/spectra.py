@@ -8,6 +8,7 @@ define the contract each estimator must meet.
 from __future__ import annotations
 
 import numpy as np
+from scipy import signal
 
 
 def frequency_axis(n: int, dt_days: float) -> np.ndarray:
@@ -66,7 +67,38 @@ def raw_periodogram(
     squared magnitude, and apply the one-sided + window + ``dt`` normalisation so
     that :func:`parseval_ratio` returns approximately 1.
     """
-    raise NotImplementedError("Implement the one-sided, Parseval-normalised periodogram.")
+
+    n = len(x)
+
+    # Detrend data
+    # if detrend:
+        # x = x - np.mean(x)
+        # remove linear trend as well
+
+    # Apply specified window (boxcar for now)
+    # x = x * signal.get_window(window, Nx=n)
+    # for i in x.values:
+        # print(i)
+    
+    # Real fast Fourier transform (RFFT)
+    # Squared magnitude
+    # rfft = np.fft.rfft(a=x)
+
+    # Get dicrete frequencies f_k = k/(N dt), k in [0, N/2]
+    # freq_axis = frequency_axis(n, dt_days)
+    # print(freq_axis)
+
+    # Detrend, apply specified window and compute periodogram 
+    # freq, psd = signal.periodogram(x, fs=dt_days, detrend='linear')
+    freq, psd = signal.periodogram(x, fs=dt_days, detrend='linear', window=window)
+
+    # Verify that parseval_ratio = 1
+    ratio = parseval_ratio(x, freq, psd)
+    print(ratio)
+
+    return freq, psd
+    # raise NotImplementedError("Implement the one-sided, Parseval-normalised periodogram.")
+    
 
 
 def welch_psd(
