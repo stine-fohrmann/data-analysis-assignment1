@@ -108,4 +108,9 @@ def butterworth_squared_response(
 
     TODO (student): implement and return ``h2``.
     """
-    raise NotImplementedError("Implement |H(f)|**2 from the formula in the docstring.")
+
+    h2 = 1 / (1 + (freq/f_cut)**(2*order))
+    if zero_phase:
+        return h2**2
+    else:
+        return h2

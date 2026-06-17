@@ -63,41 +63,21 @@ def raw_periodogram(
     Each estimate has only ~2 degrees of freedom, so the result is extremely noisy
     — that unreliability is the pedagogical point that motivates Welch averaging.
 
-    TODO (student): detrend, apply the window, take ``numpy.fft.rfft``, form the
+    DONE (student): detrend, apply the window, take ``numpy.fft.rfft``, form the
     squared magnitude, and apply the one-sided + window + ``dt`` normalisation so
     that :func:`parseval_ratio` returns approximately 1.
     """
 
     n = len(x)
 
-    # Detrend data
-    # if detrend:
-        # x = x - np.mean(x)
-        # remove linear trend as well
-
-    # Apply specified window (boxcar for now)
-    # x = x * signal.get_window(window, Nx=n)
-    # for i in x.values:
-        # print(i)
-    
-    # Real fast Fourier transform (RFFT)
-    # Squared magnitude
-    # rfft = np.fft.rfft(a=x)
-
-    # Get dicrete frequencies f_k = k/(N dt), k in [0, N/2]
-    # freq_axis = frequency_axis(n, dt_days)
-    # print(freq_axis)
-
     # Detrend, apply specified window and compute periodogram 
-    # freq, psd = signal.periodogram(x, fs=dt_days, detrend='linear')
-    freq, psd = signal.periodogram(x, fs=dt_days, detrend='linear', window=window)
+    freq, psd = signal.periodogram(x, fs=1/dt_days, detrend='linear', window=window)
 
     # Verify that parseval_ratio = 1
     ratio = parseval_ratio(x, freq, psd)
-    print(ratio)
+    print(f'Parseval ratio = {ratio}')
 
     return freq, psd
-    # raise NotImplementedError("Implement the one-sided, Parseval-normalised periodogram.")
     
 
 
@@ -141,7 +121,17 @@ def welch_psd(
 
     TODO (student): implement the segmenting, windowing, averaging, and normalisation.
     """
-    raise NotImplementedError("Implement Welch overlapped-segment averaging.")
+    freq, psd = signal.welch(x, fs=1/dt_days, 
+        detrend='linear',
+        window=window,
+        nperseg=segment_length,
+        noverlap=segment_length*overlap)
+    
+    # Verify that parseval_ratio = 1
+    ratio = parseval_ratio(x, freq, psd)
+    print(f'Parseval ratio = {ratio}')
+
+    return freq, psd
 
 
 def parseval_ratio(x: np.ndarray, freq: np.ndarray, psd: np.ndarray) -> float:
