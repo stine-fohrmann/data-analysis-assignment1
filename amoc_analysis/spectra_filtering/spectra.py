@@ -122,10 +122,12 @@ def welch_psd(
     TODO (student): implement the segmenting, windowing, averaging, and normalisation.
     """
     freq, psd = signal.welch(x, fs=1/dt_days, 
-        detrend='linear',
+        detrend='constant',     # detrending is done before input into this function
         window=window,
         nperseg=segment_length,
-        noverlap=segment_length*overlap)
+        noverlap=segment_length*overlap,
+        # scaling='density'
+        )
     
     return freq, psd
 
