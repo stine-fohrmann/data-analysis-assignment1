@@ -127,10 +127,6 @@ def welch_psd(
         nperseg=segment_length,
         noverlap=segment_length*overlap)
     
-    # Verify that parseval_ratio = 1
-    ratio = parseval_ratio(x, freq, psd)
-    print(f'Parseval ratio = {ratio}')
-
     return freq, psd
 
 
