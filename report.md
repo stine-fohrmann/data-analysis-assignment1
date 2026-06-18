@@ -1,4 +1,8 @@
-# Assignment 1
+# Assignment 1: Characterising an AMOC time series
+
+- array: MOVE 16°N
+- variable: MOC (NADW transport)
+- time span: 2000 - 2022
 
 ## Part A - Characterise the series (time domain)
 
