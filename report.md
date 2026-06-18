@@ -14,6 +14,7 @@ The transport varies between -3.3 and -31.9 Sv, covering a range of 28.5 Sv.
 
 The distribution of MOC transport is shown here: 
 ![MOVE 16°N NADW transport distribution.](plots/hist.png)
+The histogram appears roughly Gaussian, suggesting the variability is stochastic rather than driven by extreme outliers or skewed processes.
 
 ## Part B - The spectrum (frequency domain)
 
@@ -23,10 +24,12 @@ The Welch spectrum was computed using the Hann window with segment length 2048 a
 ![MOVE 16°N Welch spectrum.](plots/welch.png)
 
 The 10-day cutoff persists, but due to the additional 3-month low-pass filter, only patterns with periods longer than 3 months (ca. $10^{-2}$ cpd) are preserved.
-The dominant timescale appears to be $10^{-2.7}$ cpd, which is equivalent to 0.728 cycles per year. This might represent the annual cycle of the NADW, although it does not exactly complete one whole cycle per year.
 Since the observed variance is concentrated at low frequencies, the MOC transport is red noise.
+The dominant timescale appears to be $10^{-2.7}$ cpd, which is equivalent to a period of around 500 days, representing interannual variability in NADW transport. 
 
-However, somewhat unexpectedly, the spectrum does not show any peaks in the interannual range.
-Additionally, both spectra do not decrease as sharply as expected. This could be due to aliasing, poor window choice or potentially a coding error.
+However, somewhat unexpectedly, the spectrum does not show a peak for an annual cycle, which would be at $10^{-2.56}$ cpd.
+Additionally, both spectra do not decrease as sharply as expected. This might be due to aliasing, poor window choice, or potentially a coding error.
 
-The Parseval ratio of 0.89 is not that close to the expected value of 1, suggesting that the Welch PSD might be implemented incorrectly.
+The spectrum of the filtered data also exhibits similar patterns to the tapers characteristic for Tukey and Hann, rather than a simple linear decline for frequencies higher than the 3-month cut-off.
+
+Additionally, the Parseval ratio of 0.89 is not that close to the expected value of 1, suggesting that there might be some mistake in the implementation of the Welch PSD or how it is used.
